@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useMemo } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls, Text, Image as ThreeImage } from '@react-three/drei';
 import { Mesh, PlaneGeometry, MeshBasicMaterial, MeshStandardMaterial, TextureLoader } from 'three';
@@ -94,18 +94,20 @@ const PoetDetailScene: React.FC<{
   const [rotation, setRotation] = React.useState(0);
 
   // 计算诗词卡片的位置
-  const poemPositions = poems.map((_, index) => {
-    const angle = (index / poems.length) * Math.PI * 2 + rotation;
-    const radius = 15;
-    return {
-      position: [
-        Math.cos(angle) * radius,
-        Math.sin(angle) * radius * 0.5,
-        Math.sin(angle) * radius
-      ] as [number, number, number],
-      rotation: [0, angle + Math.PI / 2, 0] as [number, number, number]
-    };
-  });
+  const poemPositions = useMemo(() => {
+    return poems.map((_, index) => {
+      const angle = (index / poems.length) * Math.PI * 2 + rotation;
+      const radius = 15;
+      return {
+        position: [
+          Math.cos(angle) * radius,
+          Math.sin(angle) * radius * 0.5,
+          Math.sin(angle) * radius
+        ] as [number, number, number],
+        rotation: [0, angle + Math.PI / 2, 0] as [number, number, number]
+      };
+    });
+  }, [poems, rotation]);
 
   // 旋转动画
   useFrame((state, delta) => {
@@ -133,11 +135,13 @@ const PoetDetailScene: React.FC<{
       )}
       
       {/* 诗词卡片 */}
-      {poems.map((poem, index) => {
-        const { position, rotation } = poemPositions[index];
+      {poems.length > 0 && poemPositions.length > 0 && poems.map((poem, index) => {
+        const poemPos = poemPositions[index];
+        if (!poemPos) return null;
+        const { position, rotation } = poemPos;
         return (
           <PoemCard
-            key={poem.id}
+            key={poem.id || index}
             poem={poem}
             position={position}
             rotation={rotation}
