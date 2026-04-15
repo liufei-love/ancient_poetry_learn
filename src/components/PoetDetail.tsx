@@ -93,21 +93,19 @@ const PoetDetailScene: React.FC<{
   const poems = getPoemsByPoetId(poetId);
   const [rotation, setRotation] = React.useState(0);
 
-  // 计算诗词卡片的位置
-  const poemPositions = useMemo(() => {
-    return poems.map((_, index) => {
-      const angle = (index / poems.length) * Math.PI * 2 + rotation;
-      const radius = 15;
-      return {
-        position: [
-          Math.cos(angle) * radius,
-          Math.sin(angle) * radius * 0.5,
-          Math.sin(angle) * radius
-        ] as [number, number, number],
-        rotation: [0, angle + Math.PI / 2, 0] as [number, number, number]
-      };
-    });
-  }, [poems, rotation]);
+  // 计算诗词卡片的位置函数
+  const getPoemPosition = (index: number) => {
+    const angle = poems.length > 0 ? (index / poems.length) * Math.PI * 2 + rotation : 0;
+    const radius = 15;
+    return {
+      position: [
+        Math.cos(angle) * radius,
+        Math.sin(angle) * radius * 0.5,
+        Math.sin(angle) * radius
+      ] as [number, number, number],
+      rotation: [0, angle + Math.PI / 2, 0] as [number, number, number]
+    };
+  };
 
   // 旋转动画
   useFrame((state, delta) => {
@@ -135,10 +133,8 @@ const PoetDetailScene: React.FC<{
       )}
       
       {/* 诗词卡片 */}
-      {poems.length > 0 && poemPositions.length > 0 && poems.map((poem, index) => {
-        const poemPos = poemPositions[index];
-        if (!poemPos) return null;
-        const { position, rotation } = poemPos;
+      {poems.length > 0 && poems.map((poem, index) => {
+        const { position, rotation } = getPoemPosition(index);
         return (
           <PoemCard
             key={poem.id || index}
