@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls, Text, Image as ThreeImage } from '@react-three/drei';
 import { Mesh, PlaneGeometry, MeshBasicMaterial, MeshStandardMaterial, TextureLoader } from 'three';

@@ -12,8 +12,9 @@ const PoetCard: React.FC<{
   poet: Poet;
   position: [number, number, number];
   onHover: (poet: Poet) => void;
+  onUnhover: () => void;
   onSelect: (poet: Poet) => void;
-}> = ({ poet, position, onHover, onSelect }) => {
+}> = ({ poet, position, onHover, onUnhover, onSelect }) => {
   const meshRef = useRef<Mesh>(null);
   const [hovered, setHovered] = useState(false);
   const navigate = useNavigate();
@@ -27,6 +28,7 @@ const PoetCard: React.FC<{
 
   const handleUnhover = () => {
     setHovered(false);
+    onUnhover();
   };
 
   const handleClick = () => {
@@ -90,8 +92,9 @@ const PoetCard: React.FC<{
 // 3D诗人列表场景
 const PoetListScene: React.FC<{
   onPoetHover: (poet: Poet) => void;
+  onPoetUnhover: () => void;
   onPoetSelect: (poet: Poet) => void;
-}> = ({ onPoetHover, onPoetSelect }) => {
+}> = ({ onPoetHover, onPoetUnhover, onPoetSelect }) => {
   // 计算诗人卡片的位置
   const positions = poets.map((_, index) => {
     const angle = (index / poets.length) * Math.PI * 2;
@@ -115,6 +118,7 @@ const PoetListScene: React.FC<{
           poet={poet}
           position={positions[index]}
           onHover={onPoetHover}
+          onUnhover={onPoetUnhover}
           onSelect={onPoetSelect}
         />
       ))}
@@ -141,6 +145,10 @@ const PoetList: React.FC = () => {
     // 这里可以添加音频播放逻辑
   };
 
+  const handlePoetUnhover = () => {
+    setHoveredPoet(null);
+  };
+
   const handlePoetSelect = (poet: Poet) => {
     setHoveredPoet(null);
   };
@@ -149,6 +157,7 @@ const PoetList: React.FC = () => {
     <div className="relative w-full h-screen">
       <PoetListScene
         onPoetHover={handlePoetHover}
+        onPoetUnhover={handlePoetUnhover}
         onPoetSelect={handlePoetSelect}
       />
       
