@@ -1,19 +1,23 @@
-export interface Poet {
+export interface Dynasty {
   id: string;
   name: string;
-  dynasty: string;
+  period: string;
   description: string;
-  imageUrl: string;
-  audioUrl: string;
-  famousLines: string[];
+  color: string;
+  iconImage: string;
+  startYear: number;
+  endYear: number;
 }
 
-export interface Poem {
+export interface Artifact {
   id: string;
-  title: string;
-  content: string;
-  poetId: string;
-  dynasty: string;
-  sentences: string[];
-  characters: string[];
+  name: string;
+  dynastyId: string;
+  period: string;
+  description: string;
+  imageUrl: string;
+  modelUrl?: string;
+  details: string[];
+  category: string;
+  location: string;
 }

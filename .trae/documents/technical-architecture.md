@@ -5,111 +5,118 @@ graph TD
     B --> C[Three.js 3D渲染]
     B --> D[React Router路由]
     B --> E[状态管理]
-    B --> F[音频处理]
-    B --> G[本地数据存储]
+    B --> F[动画与特效]
     
-    C --> H[3D场景管理]
-    C --> I[材质和纹理]
-    C --> J[动画系统]
+    C --> G[3D场景管理]
+    C --> H[全息光影效果]
+    C --> I[3D模型加载]
     
-    G --> K[诗人数据]
-    G --> L[诗词数据]
-    G --> M[音频数据]
+    F --> J[粒子系统]
+    F --> K[后处理效果]
+    F --> L[过渡动画]
+    
+    E --> M[朝代数据]
+    E --> N[文物数据]
 ```
 
 ## 2. Technology Description
 - 前端：React@18 + TypeScript + Tailwind CSS@3 + Vite
-- 3D渲染：Three.js + @react-three/fiber + @react-three/drei
-- 音频处理：Web Audio API
+- 3D渲染：Three.js + @react-three/fiber + @react-three/drei + @react-three/postprocessing
 - 状态管理：Zustand
 - 路由：React Router
-- 本地存储：localStorage（用于存储游戏进度）
+- 动画：Framer Motion + CSS动画
 - 构建工具：Vite
 
 ## 3. Route Definitions
 | Route | Purpose |
 |-------|---------|
-| / | 首页 - 诗人列表展示 |
-| /poet/:id | 诗人详情页 - 展示诗人信息和诗词 |
-| /poem/:id | 诗词游戏页 - 游戏界面 |
+| / | 首页 - 时间轴与朝代概览 |
+| /dynasty/:id | 朝代详情页 - 3D文物展示 |
+| /artifact/:id | 文物详情页 - 全息光影展示 |
 
 ## 4. Data Model
 ### 4.1 Data Model Definition
 ```mermaid
 erDiagram
-    POET { 
+    DYNASTY { 
         string id 
         string name 
-        string dynasty 
+        string period 
+        string description 
+        string color 
+        string iconImage 
+    }
+    
+    ARTIFACT { 
+        string id 
+        string name 
+        string dynastyId 
+        string period 
         string description 
         string imageUrl 
-        string audioUrl 
+        string modelUrl 
+        string[] details 
     }
     
-    POEM { 
-        string id 
-        string title 
-        string content 
-        string poetId 
-        string dynasty 
-    }
-    
-    POET ||--o{ POEM : has
+    DYNASTY ||--o{ ARTIFACT : has
 ```
 
 ### 4.2 Data Definition
-#### 诗人数据结构
+#### 朝代数据结构
 ```typescript
-interface Poet {
+interface Dynasty {
   id: string;
   name: string;
-  dynasty: string;
+  period: string;
   description: string;
-  imageUrl: string;
-  audioUrl: string;
-  famousLines: string[];
+  color: string;
+  iconImage: string;
+  startYear: number;
+  endYear: number;
 }
 ```
 
-#### 诗词数据结构
+#### 文物数据结构
 ```typescript
-interface Poem {
+interface Artifact {
   id: string;
-  title: string;
-  content: string;
-  poetId: string;
-  dynasty: string;
-  sentences: string[];
-  characters: string[];
+  name: string;
+  dynastyId: string;
+  period: string;
+  description: string;
+  imageUrl: string;
+  modelUrl?: string;
+  details: string[];
+  category: string;
+  location: string;
 }
 ```
 
 ## 5. 3D Implementation Details
-### 5.1 首页3D场景
-- 使用Three.js创建3D空间
-- 诗人卡片在3D空间中排列
-- 鼠标悬停时的缩放和旋转动画
-- 音频播放触发
+### 5.1 首页3D效果
+- 粒子背景效果
+- 时间轴的动态光影
+- 朝代卡片的3D悬浮动画
 
-### 5.2 诗人详情页3D场景
-- 中央诗人图像
-- 诗词环绕旋转效果
-- 相机视角跟随用户交互
+### 5.2 朝代详情页3D场景
+- 全息光影环绕效果
+- 文物卡片的网格布局
+- 滚动时的视差效果
 
-### 5.3 诗词游戏页3D场景
-- 游动的句子或字的动画效果
-- 拖拽交互实现
-- 正确答案时的特效渲染
+### 5.3 文物详情页3D场景
+- 文物3D模型展示
+- 360°旋转交互
+- 全息光环和粒子环绕
+- 细节点标注
 
-## 6. 性能优化策略
-- 3D模型和纹理的懒加载
-- 音频资源的预加载
-- 动画帧率控制
-- 响应式设计，根据设备性能调整3D效果复杂度
+## 6. 特效与动画策略
+- 使用Framer Motion实现页面过渡动画
+- 使用Three.js实现粒子系统和全息光影
+- 使用CSS动画实现悬停和点击效果
+- 使用@react-three/postprocessing实现辉光、景深等后处理效果
 
-## 7. 技术实现要点
-- 使用React hooks管理3D场景的生命周期
-- 使用Zustand管理全局状态
-- 使用Tailwind CSS实现响应式布局
-- 使用Web Audio API实现音频播放
-- 使用@react-three/fiber和@react-three/drei简化Three.js的使用
+## 7. 性能优化策略
+- 图片和3D模型的懒加载
+- 根据设备性能动态调整特效复杂度
+- 使用requestAnimationFrame优化动画
+- 合理使用WebGL缓存和实例化

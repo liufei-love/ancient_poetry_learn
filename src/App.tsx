@@ -1,16 +1,16 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import PoetList from './components/PoetList';
-import PoetDetail from './components/PoetDetail';
-import PoemGame from './components/PoemGame';
+import Home from './pages/Home';
+import DynastyDetail from './pages/DynastyDetail';
+import ArtifactDetail from './pages/ArtifactDetail';
 
 function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<PoetList />} />
-        <Route path="/poet/:id" element={<PoetDetail />} />
-        <Route path="/poem/:id" element={<PoemGame />} />
+        <Route path="/" element={<Home />} />
+        <Route path="/dynasty/:id" element={<DynastyDetail />} />
+        <Route path="/artifact/:id" element={<ArtifactDetail />} />
       </Routes>
     </Router>
   );
